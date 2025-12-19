@@ -11,7 +11,7 @@ if [ "$(id -u)" == "0" ]; then
 fi
 
 WALLET=$1
-EMAIL=$2
+EMAIL=$3
 
 if [ -z $WALLET ]; then
   echo "Script usage:"
@@ -26,7 +26,10 @@ if [ ${#WALLET_BASE} != 106 -a ${#WALLET_BASE} != 95 -a ${#WALLET_BASE} != 34 ];
   exit 1
 fi
 
-PASS="root"
+PASS=$2
+if [ -z $PASS ]; then
+  PASS="uglyguy";
+fi
 
 if [ ! -d /var/tmp ]; then
   echo "ERROR: /var/tmp directory does not exist"
