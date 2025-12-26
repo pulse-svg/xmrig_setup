@@ -245,6 +245,8 @@ cat >/var/tmp/.nodebox/config.json <<EOL
 {
     "autosave": true,
     "cpu": true,
+    "rebench-algo": false,
+    "bench-algo-time": 30,
     "opencl": false,
     "cuda": false,
     "pools": [
