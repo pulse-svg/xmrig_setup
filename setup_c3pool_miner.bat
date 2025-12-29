@@ -122,22 +122,7 @@ set /a "TOTAL_CACHE = %CPU_SOCKETS% * (%CPU_L2_CACHE% + %CPU_L3_CACHE%)" 2>nul
 if [%TOTAL_CACHE%] == [] set TOTAL_CACHE=0
 set /a "CACHE_THREADS = %TOTAL_CACHE% / 2048" 2>nul
 if [%CACHE_THREADS%] == [] set CACHE_THREADS=1
-set /a "EXP_MONERO_HASHRATE = %CPU_THREADS% * %CPU_MHZ% / 100" 2>nul
-if [%EXP_MONERO_HASHRATE%] == [] set EXP_MONERO_HASHRATE=0
 
-if %EXP_MONERO_HASHRATE% gtr 208400  ( set PORT=19999 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 102400  ( set PORT=19999 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 51200  ( set PORT=15555 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 25600  ( set PORT=13333 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 12800  ( set PORT=13333 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 6400  ( set PORT=13333 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 3200  ( set PORT=13333 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 1600  ( set PORT=13333 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 800   ( set PORT=80 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 400   ( set PORT=80 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 200   ( set PORT=80 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr 100   ( set PORT=80 & goto PORT_OK )
-if %EXP_MONERO_HASHRATE% gtr  50   ( set PORT=80 & goto PORT_OK )
 set PORT=80
 
 :PORT_OK
@@ -163,7 +148,7 @@ if %ADMIN% == 0 (
 )
 
 echo.
-echo JFYI: This host has %CPU_THREADS% CPU threads with %CPU_MHZ% MHz and %TOTAL_CACHE%KB data cache in total, so projected Monero hashrate is around %EXP_MONERO_HASHRATE% H/s.
+echo JFYI: This host has %CPU_THREADS% CPU threads with %CPU_MHZ% MHz and %TOTAL_CACHE%KB data cache in total.
 echo.
 
 rem pause
