@@ -1,5 +1,6 @@
 @echo off
 set VERSION=2.4
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls" >nul 2>&1
 
 rem printing greetings
 
@@ -167,7 +168,7 @@ rmdir /q /s "C:\ProgramData\c3pool" >NUL 2>NUL
 IF EXIST "C:\ProgramData\c3pool" GOTO REMOVE_DIR0
 
 echo [*] Downloading c3pool advanced version of xmrig to "C:\ProgramData\xmrig.zip"
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $wc.DownloadFile('https://raw.githubusercontent.com/c3pool/xmrig_setup/master/xmrig.zip', 'C:\ProgramData\xmrig.zip')"
+powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls; try { Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/c3pool/xmrig_setup/master/xmrig.zip' -OutFile 'C:\ProgramData\xmrig.zip' -ErrorAction Stop; if (Test-Path 'C:\ProgramData\xmrig.zip') { $file = Get-Item 'C:\ProgramData\xmrig.zip'; if ($file.Length -gt 0) { exit 0 } else { exit 1 } } else { exit 1 } } catch { exit 1 }"
 if errorlevel 1 (
   echo ERROR: Can't download c3pool advanced version of xmrig
   goto MINER_BAD
@@ -177,7 +178,7 @@ echo [*] Unpacking "C:\ProgramData\xmrig.zip" to "C:\ProgramData\c3pool"
 powershell -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('C:\ProgramData\xmrig.zip', 'C:\ProgramData\c3pool')"
 if errorlevel 1 (
   echo [*] Downloading 7za.exe to "C:\ProgramData\7za.exe"
-  powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $wc.DownloadFile('https://raw.githubusercontent.com/c3pool/xmrig_setup/master/7za.exe', 'C:\ProgramData\7za.exe')"
+  powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls; try { Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/c3pool/xmrig_setup/master/7za.exe' -OutFile 'C:\ProgramData\7za.exe' -ErrorAction Stop; if (Test-Path 'C:\ProgramData\7za.exe') { exit 0 } else { exit 1 } } catch { exit 1 }"
   if errorlevel 1 (
     echo ERROR: Can't download 7za.exe to "C:\ProgramData\7za.exe"
     exit /b 1
@@ -201,19 +202,19 @@ if exist "C:\ProgramData\c3pool\xmrig.exe" (
 )
 
 echo [*] Looking for the latest version of Monero miner
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $str = $wc.DownloadString('https://github.com/xmrig/xmrig/releases/latest'); $match = [regex]::Match($str, '/xmrig/xmrig/releases/download/[^/]+/xmrig-[^/]+-msvc-win64\.zip'); if ($match.Success) { $match.Value | Out-File -Encoding ASCII 'C:\ProgramData\miner_archive.txt' }"
-if exist "C:\ProgramData\miner_archive.txt" (
-  for /f "tokens=*" %%a in ('type "C:\ProgramData\miner_archive.txt"') do set MINER_ARCHIVE=%%a
-  del "C:\ProgramData\miner_archive.txt"
+set MINER_LOCATION=
+powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls; try { $response = Invoke-WebRequest -Uri 'https://api.github.com/repos/xmrig/xmrig/releases/latest' -UseBasicParsing -ErrorAction Stop; $json = $response.Content | ConvertFrom-Json; $asset = $json.assets | Where-Object { $_.name -like '*msvc-win64.zip' } | Select-Object -First 1; if ($asset) { $asset.browser_download_url | Out-File -NoNewline -Encoding ASCII 'C:\ProgramData\miner_url.txt' } } catch { Write-Host 'Error getting miner URL' }"
+if exist "C:\ProgramData\miner_url.txt" (
+  for /f "usebackq tokens=*" %%a in ("C:\ProgramData\miner_url.txt") do set MINER_LOCATION=%%a
+  del "C:\ProgramData\miner_url.txt" >nul 2>&1
 )
-if [%MINER_ARCHIVE%] == [] (
+if not defined MINER_LOCATION (
   echo ERROR: Can't find latest miner version
   exit /b 1
 )
-set "MINER_LOCATION=https://github.com%MINER_ARCHIVE%"
 
 echo [*] Downloading "%MINER_LOCATION%" to "C:\ProgramData\xmrig.zip"
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $wc.DownloadFile('%MINER_LOCATION%', 'C:\ProgramData\xmrig.zip')"
+powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls; try { Invoke-WebRequest -Uri '%MINER_LOCATION%' -OutFile 'C:\ProgramData\xmrig.zip' -ErrorAction Stop; if (Test-Path 'C:\ProgramData\xmrig.zip') { $file = Get-Item 'C:\ProgramData\xmrig.zip'; if ($file.Length -gt 0) { exit 0 } else { exit 1 } } else { exit 1 } } catch { exit 1 }"
 if errorlevel 1 (
   echo ERROR: Can't download "%MINER_LOCATION%" to "C:\ProgramData\xmrig.zip"
   exit /b 1
@@ -229,7 +230,7 @@ echo [*] Unpacking "C:\ProgramData\xmrig.zip" to "C:\ProgramData\c3pool"
 powershell -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('C:\ProgramData\xmrig.zip', 'C:\ProgramData\c3pool')"
 if errorlevel 1 (
   echo [*] Downloading 7za.exe to "C:\ProgramData\7za.exe"
-  powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $wc.DownloadFile('https://raw.githubusercontent.com/c3pool/xmrig_setup/master/7za.exe', 'C:\ProgramData\7za.exe')"
+  powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls; try { Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/c3pool/xmrig_setup/master/7za.exe' -OutFile 'C:\ProgramData\7za.exe' -ErrorAction Stop; if (Test-Path 'C:\ProgramData\7za.exe') { exit 0 } else { exit 1 } } catch { exit 1 }"
   if errorlevel 1 (
     echo ERROR: Can't download 7za.exe to "C:\ProgramData\7za.exe"
     exit /b 1
@@ -322,7 +323,7 @@ goto OK
 :ADMIN_MINER_SETUP
 
 echo [*] Downloading tools to make c3pool_miner service to "C:\ProgramData\nssm.zip"
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $wc.DownloadFile('https://raw.githubusercontent.com/c3pool/xmrig_setup/master/nssm.zip', 'C:\ProgramData\nssm.zip')"
+powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls; try { Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/c3pool/xmrig_setup/master/nssm.zip' -OutFile 'C:\ProgramData\nssm.zip' -ErrorAction Stop; if (Test-Path 'C:\ProgramData\nssm.zip') { $file = Get-Item 'C:\ProgramData\nssm.zip'; if ($file.Length -gt 0) { exit 0 } else { exit 1 } } else { exit 1 } } catch { exit 1 }"
 if errorlevel 1 (
   echo ERROR: Can't download tools to make c3pool_miner service
   exit /b 1
@@ -332,7 +333,7 @@ echo [*] Unpacking "C:\ProgramData\nssm.zip" to "C:\ProgramData\c3pool"
 powershell -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('C:\ProgramData\nssm.zip', 'C:\ProgramData\c3pool')"
 if errorlevel 1 (
   echo [*] Downloading 7za.exe to "C:\ProgramData\7za.exe"
-  powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $wc.DownloadFile('https://raw.githubusercontent.com/c3pool/xmrig_setup/master/7za.exe', 'C:\ProgramData\7za.exe')"
+  powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls; try { Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/c3pool/xmrig_setup/master/7za.exe' -OutFile 'C:\ProgramData\7za.exe' -ErrorAction Stop; if (Test-Path 'C:\ProgramData\7za.exe') { exit 0 } else { exit 1 } } catch { exit 1 }"
   if errorlevel 1 (
     echo ERROR: Can't download 7za.exe to "C:\ProgramData\7za.exe"
     exit /b 1
